@@ -12,17 +12,17 @@ public class Node< T : Comparable > {
     public weak var parent:Node?
     
     //Initialization
+    public convenience init(value: T) {
+        self.init(value: value, left: nil, right: nil, parent:nil)
+    }
+    
+    //Initialization
     public init(value:T, left:Node?, right:Node?,
         parent:Node?) {
         self.value = value
         self.childLeft = left
         self.childRight = right
         self.parent = parent
-    }
-    
-    //Initialization
-    public convenience init(value: T) {
-        self.init(value: value, left: nil, right: nil, parent:nil)
     }
     
     
@@ -71,17 +71,74 @@ public class Node< T : Comparable > {
         }
         
     }
+
+    public class func traverseInOrder(node:Node?) {
+        guard let node = node else {
+            return
+        }
+        
+        Node.traverseInOrder(node: node.childLeft)
+        print(node.value)
+        Node.traverseInOrder(node: node.childRight)
+        
+    }
+    
+    public class func traversePreOrder(node: Node?) {
+        guard let node = node else {
+            return
+        }
+        print(node.value)
+        Node.traversePreOrder(node: node.childLeft)
+        Node.traversePreOrder(node: node.childRight)
+    }
+    
+    public class func traversePostOrder(node: Node?) {
+        
+        guard let node = node else {
+            return
+        }
+        
+        Node.traversePostOrder(node: node.childLeft)
+        
+        Node.traversePostOrder(node: node.childRight)
+        
+        print(node.value)
+        
+    }
+
+    public func search(value:T) -> Node?  {
+        // If we find the value
+        if value == self.value {
+            return self }
+        // If the value is less than the current node value ->
+        // recursive search in the left subtree. If is bigger,
+        // search in the right one.
+        if value < self.value {
+            guard let left = childLeft else {
+                return nil
+            }
+            return left.search(value: value)
+        } else {
+            guard let right = childRight else {
+                return nil
+            }
+            return right.search(value: value)
+        }
+    }
+    
 }
 
 let rootNode = Node(value: 10)
+rootNode.insertNodeFromRoot(value: 20)
+rootNode.insertNodeFromRoot(value: 5)
+rootNode.insertNodeFromRoot(value: 21)
+rootNode.insertNodeFromRoot(value: 8)
+rootNode.insertNodeFromRoot(value: 4)
 
-rootNode.insertNodeFromRoot(value: 50)
-rootNode.insertNodeFromRoot(value: 75)
+Node.traverseInOrder(node: rootNode)
 
-rootNode.insertNodeFromRoot(value: 100)
-rootNode.insertNodeFromRoot(value: 25)
+Node.traversePreOrder(node: rootNode)
 
-
-
-
+print("Search result: " + "\(rootNode.search(value: 1)?.value)")
+print("Search result: " + "\(rootNode.search(value: 4)?.value)")
 
